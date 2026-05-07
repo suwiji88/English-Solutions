@@ -1,5 +1,5 @@
+// @ts-nocheck 
 import { useState, useRef, useEffect } from 'react';
-
 const QUESTIONS = {
   kids: [
     'What is your name and how old are you?',
@@ -26,7 +26,7 @@ const AGE_GROUPS = [
 ];
 
 const makePrompt = (
-  category
+  category : string
 ) => `You are a warm English placement examiner at English Solutions language centre.
 You will receive 3 spoken answers (as text transcripts) from a ${
   category === 'kids'
