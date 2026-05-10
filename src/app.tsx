@@ -114,18 +114,22 @@ export default function App() {
     setIsThinking(true);
     const prompt = newAnswers.map((x, i) => `Q${i+1}: ${x.q}\nAnswer: ${x.a}`).join("\n\n");
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 800,
-          system: makePrompt(form.ageGroup.key),
-          messages: [{ role: "user", content: prompt }],
-        }),
-      });
-      const data = await res.json();
-      const text = data.content.map((b) => b.text || "").join("").trim();
+     const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+  method: "POST",
+  headers: { 
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`
+  },
+  body: JSON.stringify({
+    model: "llama3-8b-8192",
+    messages: [
+      { role: "system", content: makePrompt(form.ageGroup.key) },
+      { role: "user", content: prompt }
+    ],
+  }),
+});
+const data = await res.json();
+const text = data.choices[0].message.content.trim();
       const clean = text.replace(/```json|```/g, "").trim();
       const parsed = JSON.parse(clean);
       setResult(parsed);
